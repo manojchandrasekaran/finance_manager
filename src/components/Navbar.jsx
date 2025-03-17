@@ -5,12 +5,8 @@ function Navbar() {
   const [active, setActive] = useState("Expenses");
   return (
     <div>
+      <h1 className="text-3xl font-bold text-center p-4">Financial Manager</h1>
       <nav className="bg-red-600 p-5 shadow-md">
-        <span className="bg-amber-400">
-          <h1 className="text-3xl font-bold text-center p-4">
-            Financial Manager
-          </h1>
-        </span>
         <div className="container mx-auto flex justify-between items-center">
           <ul className="flex space-x-6 mx-auto">
             {[
