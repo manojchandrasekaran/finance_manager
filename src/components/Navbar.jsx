@@ -3,18 +3,20 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   const [active, setActive] = useState("Expenses");
+  const pages = [
+    { name: "Expenses", path: "/" },
+    { name: "Goals", path: "/goals" },
+    { name: "Investments", path: "/investments" },
+    { name: "Reports", path: "/reports" },
+  ];
+
   return (
     <div>
       <h1 className="text-3xl font-bold text-center p-4">Financial Manager</h1>
       <nav className="bg-red-600 p-5 shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <ul className="flex space-x-6 mx-auto">
-            {[
-              { name: "Expenses", path: "/" },
-              { name: "Goals", path: "/goals" },
-              { name: "Investments", path: "/investments" },
-              { name: "Reports", path: "/reports" },
-            ].map((item) => (
+            {pages.map((item) => (
               <li key={item.name}>
                 <Link
                   to={item.path}
