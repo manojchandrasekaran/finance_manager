@@ -54,8 +54,13 @@ import { Label } from "@/shadcn/components/ui/label";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/shadcn/components/ui/calendar";
+import { useDispatch } from "react-redux";
+import { addExpense } from "@/features/expenseSlice";
+import DisplayExpense from "./DisplayExpense";
 
 function Homepage() {
+  // console.log("Homepage log  ");
+
   const categories = [
     {
       value: "food",
@@ -79,17 +84,42 @@ function Homepage() {
     },
   ];
 
-  const [open, setOpen] = useState(false);
-  const [expenseType, setexpenseType] = useState(false);
-  const [value, setValue] = useState("");
-  const [date, setDate] = useState();
+  const expense_type = [
+    {
+      value: "credit",
+      label: "credit",
+    },
+    {
+      value: "debit",
+      label: "debit",
+    },
+  ];
 
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [expenseOpen, setExpenseOpen] = useState(false);
+  const [expenseType, setexpenseType] = useState("");
+  const [date, setDate] = useState();
+  const [formData, setformData] = useState(null);
+  const [expenseData, setExpenseData] = useState(null);
+  const dispatch = useDispatch();
+
+  function saveData() {
+    // console.log(formData);
+    setExpenseData(formData);
+    setValue("");
+    setexpenseType("");
+    setDate("");
+    dispatch(addExpense(formData));
+  }
   return (
     <>
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex justify-end p-3">
-            <Button style={{ color: "red" }}>Add Expense</Button>
+            <Button style={{ color: "red" }} className="btn">
+              Add Expense
+            </Button>
           </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
@@ -99,77 +129,22 @@ function Homepage() {
               Keep your expenses less!
             </DialogDescription>
           </DialogHeader>
-          {/* <div className="flex items-center space-x-2">
-            <div className="grid flex-1 gap-2">
-              <Label htmlFor="expense-name">Expense Name</Label>
-              <Input id="expense-name" defaultValue="" />
-            </div>
-            <div className="grid flex-1 gap-2">
-              <Label htmlFor="category">Category</Label>
-              <Input id="category" defaultValue="" />
-            </div>
-            <div className="grid flex-1 gap-2">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" defaultValue="" />
-            </div>
-          </div> */}
 
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="expense-name">Expense Name</Label>
-              <Input id="expense-name" defaultValue="" />
+              <Input
+                id="expense-name"
+                name="name"
+                defaultValue=""
+                onChange={(e) =>
+                  setformData({ ...formData, [e.target.name]: e.target.value })
+                }
+              />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="category">Category</Label>
-              {/* <Input id="category" defaultValue="" /> */}
-
-              {/* **************************Dropdown testings****************** */}
-
-              {/* <DropdownMenu>
-                <DropdownMenuTrigger>Open</DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Billing</DropdownMenuItem>
-                  <DropdownMenuItem>Team</DropdownMenuItem>
-                  <DropdownMenuItem>Subscription</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-
-              {/* <Command className="rounded-lg border shadow-md md:min-w-[450px]">
-                <CommandInput placeholder="Type a command or search..." />
-                <CommandList>
-                  <CommandEmpty>No results found.</CommandEmpty>
-                  <CommandGroup heading="Suggestions">
-                    <CommandItem>
-                      <span>Calendar</span>
-                    </CommandItem>
-                    <CommandItem>
-                      <span>Search Emoji</span>
-                    </CommandItem>
-                    <CommandItem disabled>
-                      <span>Calculator</span>
-                    </CommandItem>
-                  </CommandGroup>
-                  <CommandSeparator />
-                  <CommandGroup heading="Settings">
-                    <CommandItem>
-                      <span>Profile</span>
-                      <CommandShortcut>⌘P</CommandShortcut>
-                    </CommandItem>
-                    <CommandItem>
-                      <span>Billing</span>
-                      <CommandShortcut>⌘B</CommandShortcut>
-                    </CommandItem>
-                    <CommandItem>
-                      <span>Settings</span>
-                      <CommandShortcut>⌘S</CommandShortcut>
-                    </CommandItem>
-                  </CommandGroup>
-                </CommandList>
-              </Command> */}
-
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -179,9 +154,8 @@ function Homepage() {
                     className="w-[400px] justify-between"
                   >
                     {value
-                      ? categories.find(
-                          (framework) => framework.value === value
-                        )?.label
+                      ? categories.find((category) => category.value === value)
+                          ?.label
                       : "Select Category..."}
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
@@ -195,22 +169,28 @@ function Homepage() {
                     <CommandList>
                       <CommandEmpty>No category found.</CommandEmpty>
                       <CommandGroup>
-                        {categories.map((framework) => (
+                        {categories.map((category) => (
                           <CommandItem
-                            key={framework.value}
-                            value={framework.value}
+                            key={category.value}
+                            value={category.value}
                             onSelect={(currentValue) => {
+                              console.log("currentValue=", currentValue);
+
                               setValue(
                                 currentValue === value ? "" : currentValue
                               );
+                              setformData({
+                                ...formData,
+                                category: currentValue,
+                              });
                               setOpen(false);
                             }}
                           >
-                            {framework.label}
+                            {category.label}
                             <Check
                               className={cn(
                                 "ml-auto",
-                                value === framework.value
+                                value === category.value
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
@@ -225,20 +205,21 @@ function Homepage() {
 
               {/* **************************Dropdown testings****************** */}
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="expense_type">Expense Type</Label>
 
-              <Popover open={expenseType} onOpenChange={setexpenseType}>
+              <Popover open={expenseOpen} onOpenChange={setExpenseOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
-                    aria-expanded={open}
+                    aria-expanded={expenseOpen}
                     className="w-[400px] justify-between"
                   >
-                    {value
-                      ? categories.find(
-                          (framework) => framework.value === value
+                    {expenseType
+                      ? expense_type.find(
+                          (expense) => expense.value === expenseType
                         )?.label
                       : "Select Expense Type..."}
                     <ChevronsUpDown className="opacity-50" />
@@ -253,22 +234,30 @@ function Homepage() {
                     <CommandList>
                       {/* <CommandEmpty>No category found.</CommandEmpty> */}
                       <CommandGroup>
-                        {categories.map((framework) => (
+                        {expense_type.map((expense) => (
                           <CommandItem
-                            key={framework.value}
-                            value={framework.value}
+                            key={expense.value}
+                            value={expense.value}
                             onSelect={(currentValue) => {
-                              setValue(
-                                currentValue === value ? "" : currentValue
+                              // setValue(
+                              //   currentValue === value ? "" : currentValue
+                              // );
+                              setexpenseType(
+                                currentValue === expenseType ? "" : currentValue
                               );
-                              setOpen(false);
+
+                              setformData({
+                                ...formData,
+                                expenseType: currentValue,
+                              });
+                              setExpenseOpen(false);
                             }}
                           >
-                            {framework.label}
+                            {expense.label}
                             <Check
                               className={cn(
                                 "ml-auto",
-                                value === framework.value
+                                expenseType === expense.value
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
@@ -286,7 +275,6 @@ function Homepage() {
 
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>
-              {/* <Input id="date" defaultValue="" /> */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -304,7 +292,16 @@ function Homepage() {
                   <Calendar
                     mode="single"
                     selected={date}
-                    onSelect={setDate}
+                    onSelect={
+                      (currentDate) => {
+                        setDate(currentDate.toISOString());
+                        setformData({
+                          ...formData,
+                          date: currentDate.toISOString(),
+                        });
+                      }
+                      // console.log("value-", e);
+                    }
                     initialFocus
                   />
                 </PopoverContent>
@@ -313,13 +310,31 @@ function Homepage() {
           </div>
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
+              <div className="space-x-60">
+                <Button
+                  type="button"
+                  className="bg-red-500 btn"
+                  onClick={() => {
+                    setformData(null);
+                  }}
+                >
+                  Close
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-green-600 text-white btn"
+                  onClick={saveData}
+                >
+                  Save
+                </Button>
+              </div>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <p>{JSON.stringify(formData)}</p>
+      <p>{JSON.stringify(expenseData)}</p>
+      <DisplayExpense />
     </>
   );
 }

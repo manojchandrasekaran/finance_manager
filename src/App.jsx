@@ -3,6 +3,7 @@ import Homepage from "./components/Homepage";
 import Goals from "./components/Goals";
 import Navbar from "./components/Navbar";
 import Nomatch from "./components/Nomatch";
+import "./App.css";
 
 function App() {
   return (
