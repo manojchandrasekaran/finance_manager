@@ -12,7 +12,7 @@ function App() {
 
       <Routes>
         <Route path="/" index element={<Homepage />} />
-        <Route path="/goals" index element={<Goals />} />
+        <Route path="/goals" element={<Goals />} />
         <Route path="*" element={<Nomatch />} />
       </Routes>
     </>

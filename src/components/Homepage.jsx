@@ -63,35 +63,35 @@ function Homepage() {
 
   const categories = [
     {
-      value: "food",
+      value: "Food",
       label: "Food",
     },
     {
-      value: "travel",
+      value: "Travel",
       label: "Travel",
     },
     {
-      value: "medical",
+      value: "Medical",
       label: "Medical",
     },
     {
-      value: "rent",
+      value: "Rent",
       label: "Rent",
     },
     {
-      value: "others",
+      value: "Others",
       label: "Others",
     },
   ];
 
   const expense_type = [
     {
-      value: "credit",
-      label: "credit",
+      value: "Credit",
+      label: "Credit",
     },
     {
-      value: "debit",
-      label: "debit",
+      value: "Debit",
+      label: "Debit",
     },
   ];
 
@@ -134,6 +134,7 @@ function Homepage() {
             <div className="grid gap-2">
               <Label htmlFor="expense-name">Expense Name</Label>
               <Input
+                required
                 id="expense-name"
                 name="name"
                 defaultValue=""
@@ -273,6 +274,24 @@ function Homepage() {
               </Popover>
             </div>
 
+            {/* <div className="grid gap-4"> */}
+            <div className="grid gap-2">
+              <Label htmlFor="amount">Amount</Label>
+              <Input
+                id="amount"
+                type="number"
+                name="amount"
+                defaultValue=""
+                min={0}
+                onChange={(e) =>
+                  setformData({
+                    ...formData,
+                    [e.target.name]: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="date">Date</Label>
               <Popover>
@@ -332,8 +351,8 @@ function Homepage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <p>{JSON.stringify(formData)}</p>
-      <p>{JSON.stringify(expenseData)}</p>
+      {/* <p>{JSON.stringify(formData)}</p>
+      <p>{JSON.stringify(expenseData)}</p> */}
       <DisplayExpense />
     </>
   );
