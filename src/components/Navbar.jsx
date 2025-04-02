@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const [active, setActive] = useState("Expenses");
+  const [active, setActive] = useState("Transactions");
   const pages = [
-    { name: "Expenses", path: "/" },
+    { name: "Transactions", path: "/" },
     { name: "Goals", path: "/goals" },
     { name: "Investments", path: "/investments" },
     { name: "Reports", path: "/reports" },
