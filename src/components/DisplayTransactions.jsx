@@ -1,5 +1,4 @@
 import React from "react";
-// import { v4 as uuidv4 } from "uuid";
 import {
   Table,
   TableBody,
@@ -10,9 +9,11 @@ import {
   TableRow,
 } from "@/shadcn/components/ui/table";
 import { Button } from "@/shadcn/components/ui/button";
+import { useSelector } from "react-redux";
 
-function TableComp({ data, balance }) {
-  // console.log("Data===", data, balance);
+function DisplayTransactions() {
+  const { transactions, balance } = useSelector((state) => state.expense);
+
   var tableHeaders = [
     "ID",
     "Expense Name",
@@ -22,25 +23,24 @@ function TableComp({ data, balance }) {
     "Amount",
     "Actions",
   ];
-
   return (
     <>
-      {data.length > 0 ? (
-        <div>
-          <div className="flex justify-center font-bold text-2xl mb-8">
-            Total Balance: {balance}
-          </div>
-          <Table>
-            <TableCaption>A list of your recent expenses.</TableCaption>
-            <TableHeader>
-              <TableRow className="w-[100px]">
-                {tableHeaders.map((item) => (
-                  <TableHead key={item}>{item}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
+      <div>
+        <div className="flex justify-center font-bold text-2xl mb-8">
+          Total Balance: {balance}
+        </div>
+        <Table>
+          <TableCaption>A list of your recent transactions.</TableCaption>
+          <TableHeader>
+            <TableRow className="w-[100px]">
+              {tableHeaders.map((item) => (
+                <TableHead key={item}>{item}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          {transactions.length > 0 ? (
             <TableBody>
-              {data.map((item) => (
+              {transactions.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
@@ -64,18 +64,7 @@ function TableComp({ data, balance }) {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div>
-          <Table>
-            <TableHeader>
-              <TableRow className="w-[100px]">
-                {tableHeaders.map((item) => (
-                  <TableHead key={item}>{item}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
+          ) : (
             <TableBody className=" justify-center">
               <TableRow>
                 <TableCell colSpan={7} className="text-center">
@@ -83,11 +72,11 @@ function TableComp({ data, balance }) {
                 </TableCell>
               </TableRow>
             </TableBody>
-          </Table>
-        </div>
-      )}
+          )}
+        </Table>
+      </div>
     </>
   );
 }
 
-export default TableComp;
+export default DisplayTransactions;
