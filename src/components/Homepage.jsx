@@ -83,23 +83,30 @@ function Homepage() {
       label: "Debit",
     },
   ];
-
+  var initialData = {
+    name: "",
+    category: "",
+    expenseType: "",
+    amount: "",
+    date: "",
+  };
   const [open, setOpen] = useState(false);
   const [categoryVal, setCatValue] = useState("");
   const [expenseOpen, setExpenseOpen] = useState(false);
   const [expenseType, setexpenseType] = useState("");
   const [date, setDate] = useState();
-  const [formData, setformData] = useState(null);
-  const [expenseData, setExpenseData] = useState(null);
+  const [formData, setformData] = useState(initialData);
+  // const [expenseData, setExpenseData] = useState(null);
   const dispatch = useDispatch();
 
   function saveData() {
     console.log(formData);
-    setExpenseData(formData);
+    // setExpenseData(formData);
     setCatValue("");
     setexpenseType("");
     setDate("");
     dispatch(addExpense(formData));
+    setformData(initialData);
   }
   return (
     <>
@@ -118,7 +125,8 @@ function Homepage() {
               Keep your expenses less!
             </DialogDescription>
           </DialogHeader>
-          <form>
+          <div>
+            {/* <form> */}
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="expense-name">Expense Name</Label>
@@ -126,7 +134,8 @@ function Homepage() {
                   required
                   id="expense-name"
                   name="name"
-                  defaultValue=""
+                  // defaultValue=""
+                  // value={formData.name}
                   onChange={(e) =>
                     setformData({
                       ...formData,
@@ -236,7 +245,9 @@ function Homepage() {
                               value={expense.value}
                               onSelect={(currentValue) => {
                                 setexpenseType(
-                                currentValue === expenseType ? "" : currentValue
+                                  currentValue === expenseType
+                                    ? ""
+                                    : currentValue
                                 );
 
                                 setformData({
@@ -275,12 +286,12 @@ function Homepage() {
                   name="amount"
                   defaultValue=""
                   min={0}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setformData({
                       ...formData,
                       [e.target.name]: Number(e.target.value),
-                    })
-                  }
+                    });
+                  }}
                 />
               </div>
               <div className="grid gap-2">
@@ -335,28 +346,31 @@ function Homepage() {
               </div>
             </div>
             <DialogFooter className="sm:justify-start">
-              <DialogClose asChild>
-                <div className="space-x-60 mt-4">
-                  <Button
-                    type="button"
-                    className="bg-red-500 btn"
-                    onClick={() => {
-                      setformData(null);
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    type="button"
-                    className="bg-green-600 text-white btn"
-                    onClick={saveData}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </DialogClose>
+              <div className="space-x-60 mt-4">
+                <DialogClose asChild>
+                  <div>
+                    <Button
+                      type="button"
+                      className="bg-red-500 btn"
+                      onClick={() => {
+                        setformData(initialData);
+                      }}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="bg-green-600 text-white btn"
+                      onClick={saveData}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                </DialogClose>
+              </div>
             </DialogFooter>
-          </form>
+            {/* </form> */}
+          </div>
         </DialogContent>
       </Dialog>
       {/* <p>{JSON.stringify(formData)}</p>
