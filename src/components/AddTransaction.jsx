@@ -74,6 +74,7 @@ function AddTransaction() {
       label: "Debit",
     },
   ];
+
   var initialData = {
     name: "",
     category: "",
@@ -81,6 +82,7 @@ function AddTransaction() {
     amount: "",
     date: "",
   };
+
   const [open, setOpen] = useState(false);
   const [categoryVal, setCatValue] = useState("");
   const [expenseOpen, setExpenseOpen] = useState(false);
@@ -88,45 +90,58 @@ function AddTransaction() {
   const [date, setDate] = useState();
   const [formData, setformData] = useState(initialData);
   // const [expenseData, setExpenseData] = useState(null);
+  const [modalFlag, setModalFlag] = useState(false);
   const dispatch = useDispatch();
 
-  function saveData() {
-    console.log(formData);
+  function saveData(e) {
+    console.log("event is=", e);
+
+    e.preventDefault();
+    console.log("formData on savedata=", formData);
+
+    // setModalFlag(false);
     // setExpenseData(formData);
     setCatValue("");
     setexpenseType("");
     setDate("");
     dispatch(addExpense(formData));
-    setformData(initialData);
+    // setformData(initialData);
   }
   return (
     <>
-      <Dialog>
+      <Dialog open={modalFlag} onOpenChange={setModalFlag}>
         <DialogTrigger asChild>
           <div className="flex justify-end p-3">
-            <Button style={{ color: "red" }} className="btn">
-              Add Expense
+            <Button
+              style={{ color: "red" }}
+              className="btn"
+              onClick={() => setModalFlag(true)}
+            >
+              Add Transaction
             </Button>
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <DialogHeader>
-            <DialogTitle>Add a Expense</DialogTitle>
+            <DialogTitle>Add a Transaction</DialogTitle>
             <DialogDescription className="text-orange-400">
               Keep your expenses less!
             </DialogDescription>
           </DialogHeader>
-          <div>
-            {/* <form> */}
+          <form onSubmit={saveData}>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="expense-name">Expense Name</Label>
+                <Label htmlFor="expense-name">Transaction Name</Label>
                 <Input
                   required
                   id="expense-name"
                   name="name"
                   // defaultValue=""
-                  // value={formData.name}
+                  value={formData.name}
                   onChange={(e) =>
                     setformData({
                       ...formData,
@@ -135,7 +150,6 @@ function AddTransaction() {
                   }
                 />
               </div>
-              
               <div className="grid gap-2">
                 <Label htmlFor="category">Category</Label>
                 <Popover open={open} onOpenChange={setOpen}>
@@ -168,7 +182,7 @@ function AddTransaction() {
                               key={category.value}
                               value={category.value}
                               onSelect={(currentValue) => {
-                                console.log("currentValue=", currentValue);
+                                // console.log("currentValue=", currentValue);
 
                                 setCatValue(
                                   currentValue === categoryVal
@@ -198,13 +212,10 @@ function AddTransaction() {
                     </Command>
                   </PopoverContent>
                 </Popover>
-
-                {/* **************************Dropdown testings****************** */}
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="expense_type">Expense Type</Label>
-
                 <Popover open={expenseOpen} onOpenChange={setExpenseOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -223,12 +234,7 @@ function AddTransaction() {
                   </PopoverTrigger>
                   <PopoverContent className="w-[200px] p-0">
                     <Command>
-                      {/* <CommandInput
-                          placeholder="Search Category..."
-                          className="h-15"
-                        /> */}
                       <CommandList>
-                        {/* <CommandEmpty>No category found.</CommandEmpty> */}
                         <CommandGroup>
                           {expense_type.map((expense) => (
                             <CommandItem
@@ -259,8 +265,6 @@ function AddTransaction() {
                               />
                             </CommandItem>
                           ))}
-                          {/* <CommandItem>Test</CommandItem>
-                            <CommandItem>Test</CommandItem> */}
                         </CommandGroup>
                       </CommandList>
                     </Command>
@@ -268,7 +272,6 @@ function AddTransaction() {
                 </Popover>
               </div>
 
-              {/* <div className="grid gap-4"> */}
               <div className="grid gap-2">
                 <Label htmlFor="amount">Amount</Label>
                 <Input
@@ -277,6 +280,7 @@ function AddTransaction() {
                   name="amount"
                   defaultValue=""
                   min={0}
+                  required
                   onChange={(e) => {
                     setformData({
                       ...formData,
@@ -318,34 +322,34 @@ function AddTransaction() {
                 </Popover>
               </div>
             </div>
-            <DialogFooter className="sm:justify-start">
-              <div className="space-x-60 mt-4">
+            <DialogFooter>
+              <div className="flex justify-between items-center w-full mt-4">
                 <DialogClose asChild>
-                  <div>
-                    <Button
-                      type="button"
-                      className="bg-red-500 btn"
-                      onClick={() => {
-                        setformData(initialData);
-                      }}
-                    >
-                      Close
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-green-600 text-white btn"
-                      onClick={saveData}
-                    >
-                      Save
-                    </Button>
-                  </div>
+                  <Button
+                    className="bg-red-500 text-white cursor-pointer"
+                    onClick={() => setformData(initialData)}
+                  >
+                    Close
+                  </Button>
                 </DialogClose>
+                {/* <DialogClose asChild> */}
+                  <Button
+                    type="submit"
+                    className="bg-green-600 text-white cursor-pointer"
+                    // onClick={() => {
+                    //   saveData();
+                    // setModalFlag(false);
+                    // }}
+                  >
+                    Save
+                  </Button>
+                {/* </DialogClose> */}
               </div>
             </DialogFooter>
-            {/* </form> */}
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
+      {/* <p>{JSON.stringify(modalFlag)}</p> */}
     </>
   );
 }
